@@ -37,21 +37,21 @@
 
 #### Shared variables
 
-| Variable scope | Variables available                                          |
-| -------------- | ------------------------------------------------------------ |
-| Server         | To all applications on a server and all clients              |
-| Application    | To all pages in an application for all clients               |
+| Variable scope | Variables available                                    |
+| -------------- | ------------------------------------------------------ |
+| Server         | To all applications on a server and all clients        |
+| Application    | To all pages in an application for all clients         |
 | Client         | For a single client browser over multiple browser sessions in one application |
 | Session        | For a single client browser for a single browser session in one application |
 
 #### Application events and the [`Application.cfc`](https://cfdocs.org/application-cfc) file
 
-| Event             | Trigger                                                      |
-| ----------------- | ------------------------------------------------------------ |
+| Event             | Trigger                                             |
+| ----------------- | --------------------------------------------------- |
 | Application start | ColdFusion starts processing the first request for a page in an application that is not running. |
 | Application end   | An application time-out setting is reached or the server shuts down. |
 | Session start     | A new session is created as a result of a request that is not in an existing session. |
-| Session end       | A session time-out setting is reached.                       |
+| Session end       | A session time-out setting is reached.              |
 | Request start     | ColdFusion receives a request, including HTTP requests, messages to the event gateway, SOAP requests, or Flash Remoting requests. |
 | Request           | Immediately after ColdFusion finishes processing the request start event. The handler for this event is intended for use as a filter for the request contents. |
 | Request end       | ColdFusion finishes processing all pages and CFCs for the request. |
@@ -64,7 +64,7 @@ If you do not have an `Application.cfc` file, CF processes the following two pag
 - The `Application.cfm` page is processed before each page in the application.
 - The `OnRequestEnd.cfm` page is processed after each page in the application.
 
-## ColdFusion Markup Language (CFML)
+## ColdFusion Markup and Scripting Languages
 
 - https://helpx.adobe.com/coldfusion/developing-applications/the-cfml-programming-language.html
 - ColdFusion is **not case sensitive**
@@ -84,7 +84,7 @@ ColdFusion components have the following features:
 - They can provide web services and make them available over the Internet.
 - They have several features that are familiar to object-oriented programmers, including data hiding, inheritance, packages, and introspection.
 
-Tag
+CFML
 
 * [`<cfcomponent>`](https://cfdocs.org/cfcomponent)
 
@@ -139,7 +139,7 @@ However, ColdFusion data, the constants and the data that variables represent, *
 
 Outputs the contents of a variable of any type for debugging purposes. The variable can be as simple as a string or as complex as a cfc component instance.
 
-Tag
+CFML
 
 ```cfml
 <cfdump var="#server#" label="Server Scope">
@@ -159,7 +159,7 @@ dump(var = server, label = "Server Scope");
 
 #### [evaluate()](https://cfdocs.org/evaluate)
 
-* CF's `evaluate()` function --> evaluate a string expression at runtime
+* The `evaluate()` function shall evaluate a string expression at runtime
 
 ```cfml
 <!--- Evaluate the expression ---> 
@@ -171,7 +171,7 @@ dump(var = server, label = "Server Scope");
 
 * Since CF 6.1, highly recommend to use bracket notation instead
 
-```
+```cfml
 <cfset queryname[columnname][rownumber] />
 <cfset x = "foo" />
 <cfoutput>#variables['x']#</cfoutput>
@@ -193,7 +193,7 @@ dump(var = server, label = "Server Scope");
 
 * On every page of your application where you are going to use the session variable you need to include:
 
-```
+```cfml
 <cfapplication sessionmanagement="true">
 ```
 
@@ -201,13 +201,13 @@ dump(var = server, label = "Server Scope");
 
 * To set a session variable:
 
-```
+```cfml
 <cfset session.name = "UserSessionVariable">
 ```
 
 * To get value on a different page called after that
 
-```
+```cfml
 <cfoutput>#session.name#</cfoutput>
 ```
 
@@ -221,7 +221,7 @@ dump(var = server, label = "Server Scope");
 * https://helpx.adobe.com/coldfusion/cfml-reference/coldfusion-functions/functions-by-category/list-functions.html
 * https://cfdocs.org/list-functions
 
-```
+```cfml
 <cfset newlist = "IL,MO,IA,MN">
 <cfoutput>#newlist#</cfoutput>
 ```
@@ -229,22 +229,7 @@ dump(var = server, label = "Server Scope");
 ##### List Modification
 
 * [listAppend()](https://cfdocs.org/listappend)
-
-```
-<cfset newlist = listappend(newlist, "IN")>
-<cfoutput>#newlist#</cfoutput>
-```
-
 * [listGetAt()](https://cfdocs.org/listgetat)
-
-```
-listGetAt(list, position [, delimiters [, includeEmptyValues]]) -> returns string
-```
-
-```
-<cfoutput>#ListGetAt(newlist, 4)#</cfoutput>
-```
-
 * [listInsertAt()](https://cfdocs.org/listinsertat)
 * [listDeleteAt()](https://cfdocs.org/listdeleteat)
 * [listSort()](https://cfdocs.org/listsort)
@@ -264,7 +249,9 @@ Lucee Array indexes start at 1 and are passed by reference. If the elements in t
 
 * [cfif](https://cfdocs.org/cfif), [cfelseif](https://cfdocs.org/cfelseif), [cfelse](https://cfdocs.org/cfelse)
 
-```
+CFML
+
+```cfml
 <cfset count = 10> 
 <cfif count GT 20> 
 	<cfoutput>#count#</cfoutput> 
@@ -277,7 +264,7 @@ Lucee Array indexes start at 1 and are passed by reference. If the elements in t
 
 CFScript
 
-```
+```cfc
 count = 10; 
  if (count > 20) { 
  	writeOutput(count); 
@@ -292,7 +279,9 @@ count = 10;
 
 * [cfswitch](https://cfdocs.org/cfswitch), [cfcase](https://cfdocs.org/cfcase), [cfdefaultcase](https://cfdocs.org/cfdefaultcase)
 
-```
+CFML
+
+```cfml
 <cfset fruit = ""> 
 <cfswitch expression="#fruit#"> 
     <cfcase value="Apple">I like apples!</cfcase>
@@ -304,7 +293,7 @@ count = 10;
 
 CFScript
 
-```
+```cfc
 fruit = "Orange";
 switch(fruit) {
     case "Apple":
@@ -334,7 +323,7 @@ for (i = 1; i <= 10; i++) {
 }
 ```
 
-Tag
+CFML
 
 ```
 <cfloop index="i" from="1" to="10">
@@ -346,7 +335,7 @@ Tag
 
 CFScript
 
-```
+```cfc
 myArray = ["a", "b", "c"];
 
 // For Loop By index for CF9.0.0 and lower 
@@ -365,9 +354,9 @@ myArray.each(function(element, index) {
 });
 ```
 
-Tag
+CFML
 
-```
+```cfml
 <cfset myArray = ["a", "b", "c"]> 
 
 <!--- By index ---> 
@@ -383,7 +372,7 @@ Tag
 
 ##### List Loop
 
-```
+```cfml
 <!--- List ---> 
 <cfset myList = 'Jeff,John,Steve,Julliane' />
 <cfloop list="#myList#" index="item">
@@ -396,7 +385,7 @@ Tag
 
 ##### Struct Loop
 
-```
+```cfc
 myStruct = {name: "Tony", state: "Florida"}; 
 // By struct 
 for (key in myStruct) { 
@@ -411,7 +400,7 @@ myStruct.each(function(key, value) {
 
 ##### Query Loop
 
-```
+```cfml
 <cfscript>
 	myQuery = queryNew("id,user");
 	queryAddRow(myQuery);
@@ -432,7 +421,7 @@ myStruct.each(function(key, value) {
 
 CFScript
 
-```
+```cfc
 // CF < 9.0
 for ( i=1;i<=myQuery.recordCount;i++ ) {
 	writeOutput('#myQuery.id#: #myQuery.user[i]#<br />');
@@ -447,9 +436,9 @@ for ( row in myQuery ) {
 
 * [`cfwhile`](https://cfdocs.org/cfwhile)
 
-Tag
+CFML
 
-```
+```cfml
 <cfwhile [condition=boolean] [label=string]>
 	<!--- body --->
 </cfwhile>
@@ -457,7 +446,7 @@ Tag
 
 CFScript
 
-```
+```cfc
   while(condition) { }
 ```
 
@@ -477,7 +466,7 @@ CFScript
 
 Tag
 
-```
+```cfml
 <cftry>
 	hello world<br/>
 	<cfthrow message="threw on purpose!" />
@@ -492,7 +481,7 @@ Tag
 
 CFScript
 
-```
+```cfc
 try {
 	x = 5/0;
 }
@@ -510,7 +499,7 @@ catch (any e) {
 
 In Lucee, classes are components and stored in files `.cfc`. Lucee supports OOP concepts like interfaces, inheritance, public and private methods.
 
-```
+```cfc
 component {...}
 ```
 
@@ -518,7 +507,7 @@ component {...}
 
 The constructor method ~ function `init()`. There can be **only one constructor**, Lucee **does not support method overloading**.
 
-```
+```cfc
 component {
   function init(){
     return this;
@@ -544,7 +533,7 @@ Components can define additional methods and they can have the following access 
 
 In Lucee, method arguments can be optionally typed, optionally required, and have default values.
 
-```
+```cfc
 component {
 	// typed arguments
 	public function myFunc(string argumentName1, struct argumentName2){...}
@@ -561,7 +550,7 @@ component {
 
 * Using the [`new` operator](https://cfdocs.org/new), Lucee will instantiate the class and call the default constructor (if it exists)
 
-```
+```cfml
 <cfscript>
 	myObj = new default_constructor();
 </cfscript>
@@ -570,16 +559,16 @@ component {
 * [cfobject](https://cfdocs.org/cfobject) 
 * [createObject()](https://cfdocs.org/createobject) -- to instantiate CFC Components, but also Java, Com and SOAP WebService Objects. It also allows instantiating components with dynamic variable names.
 
-```
+```cfml
 <cfscript>
-	tellTimeCFC=createObject("component","appResources.components.tellTime"); 
+tellTimeCFC=createObject("component","appResources.components.tellTime"); 
 	tellTimeCFC.getLocalTime();
 </cfscript>
 ```
 
 SOAP WS
 
-```
+```cfml
 <cfscript> 
 	ws = createObject("webservice", "http://www.xmethods.net/sd/2001/TemperatureService.wsdl"); 
 	xlatstring = ws.getTemp(zipcode = "55987"); 
@@ -604,7 +593,7 @@ Lucee supports Interfaces which Components can implment multiple interfaces. Com
 
 E.g. `IMyInterface.cfc`
 
-```
+```cfc
 interface {
   public function myFunc(required string myString){ }
   public function myOtherFunc(required array myArray){ }
@@ -613,7 +602,7 @@ interface {
 
 ### Implementing an interface
 
-```
+```cfc
 component implements="IMyInterface" {
   public function myFunc(required string myString){
     return arguments.myString;
@@ -626,7 +615,7 @@ component implements="IMyInterface" {
 
 ### Interface for Type Checking
 
-```
+```cfc
 component {
 	public function init(required IMyInterface object){
 		//Will error if the object passed in did not implement IMyInterface
