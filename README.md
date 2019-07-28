@@ -90,7 +90,7 @@ Tag
 
 CFScript
 
-```
+```cfc
 component {
    function hello() {}
 }
@@ -116,7 +116,7 @@ However, ColdFusion data, the constants and the data that variables represent, *
 
 #### [cfset](https://cfdocs.org/cfset)
 
-```
+```cfml
 <cfset str = "Hello">
 <cfset temp = 5>
 ```
@@ -125,13 +125,13 @@ However, ColdFusion data, the constants and the data that variables represent, *
 
 * To convert the variable name into its value is to place pound signs around the variable name. The variable name and pound signs must be placed inside of a cfoutput tag.
 
-```
+```cfml
 <cfoutput>#str# CF World!</cfoutput>
 ```
 
 * Can also perform calculations within the pound signs
 
-```
+```cfml
 <cfoutput>#3 + 5#</cfoutput>
 ```
 
@@ -141,13 +141,13 @@ Outputs the contents of a variable of any type for debugging purposes. The varia
 
 Tag
 
-```
+```cfml
 <cfdump var="#server#" label="Server Scope">
 ```
 
 CFScript
 
-```
+```cfc
 writeDump(var = server, label = "Server Scope");
 ```
 
@@ -161,7 +161,7 @@ dump(var = server, label = "Server Scope");
 
 * CF's `evaluate()` function --> evaluate a string expression at runtime
 
-```
+```cfml
 <!--- Evaluate the expression ---> 
  <cfset first = "ColdFusion"> 
  <cfset second = "ColdFusion"> 
