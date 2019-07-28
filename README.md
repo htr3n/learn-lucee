@@ -7,12 +7,23 @@
 
 * http://www.learncfinaweek.com/week1/Application_cfc
 * https://helpx.adobe.com/coldfusion/developing-applications/user-guide.html
+* https://modern-cfml.ortusbooks.com/rapid-app-development/applicationcfc
+
+ColdFusion application is nothing more but a memory space reservation using the `this.name` property as the unique name for it.  It can contain the variables scopes like `application`, `session`, and `client` which are unique per this reservation name. This way two ColdFusion applications can have different persistence variable scopes and can even be embedded between each other:
+
+```
+webroot
+├── Application.cfc   	// root public app
+└── admin/
+    └── Application.cfc	// embedded admin app
+```
 
 ### Lucee `Application.cfc`
 
 * https://docs.lucee.org/guides/cookbooks/application-context-basic.html
 * https://rorylaitila.gitbooks.io/lucee/content/applications.html
-* The `Application.cfc` is a component you put in your web application that then is picked up by Lucee as part of the request. The `Application.cfc` is used to define context specific configurations/settings and event driven functions. Your website can have multiple `Application.cfc` files, every single file then defines an independent application context.
+
+The `Application.cfc` is a component you put in your web application that then is picked up by Lucee as part of the request. The `Application.cfc` is used to define context specific configurations/settings and event driven functions. Your website can have multiple `Application.cfc` files, every single file then defines an independent application context.
 
 * With the default setting Lucee always picks the "nearest" Application.cfc, so it searches from the current location down to the webroot.
 * The Application.cfc supports [multiple event driven functions](https://docs.lucee.org/guides/cookbooks/application-context-basic.html)
@@ -64,51 +75,29 @@ If you do not have an `Application.cfc` file, CF processes the following two pag
 - The `Application.cfm` page is processed before each page in the application.
 - The `OnRequestEnd.cfm` page is processed after each page in the application.
 
-## ColdFusion Markup and Scripting Languages
+## CF Markup and Scripting Languages
 
-- https://helpx.adobe.com/coldfusion/developing-applications/the-cfml-programming-language.html
-- ColdFusion is **not case sensitive**
-- ColdFusion includes [CFML](https://en.wikipedia.org/wiki/ColdFusion_Markup_Language) (tags) and [CFScript](https://en.wikipedia.org/wiki/CFScript) `<cfscript>...</cfscript>`
+- ColdFusion (CFML) is an interpreted and dynamic ECMA Script like language that compiles to Java Bytecode directly, thus running in the Java Virtual Machine (JVM) and in almost every operating system.
+
+- ColdFusion is **case insensitive**
+
+- ColdFusion includes pages (`.cfm`) or components / classes (`.cfc`)
+
+- There are two ways to write ColdFusion:
+
+    - Using **tags**
+    - Using **script** syntax with [CFScript](https://cfdocs.org/script)
+
+- Modern CFML advises that view or presentation layers will use the **tag** syntax in `cfm` files whilst the model or business layers will be in **script** syntax in `cfc` files
+
+    - `cfm` - ColdFusion markup file, tag syntax is the default
+
+        `cfc` - ColdFusion Component file (Class or Object), script syntax is the default. 
 
 ### Comments
 
-- Similar to HTML comments but with three dash `<!--- a comment --->`
-
-### Components
-
-ColdFusion components encapsulate multiple, related, functions. A ColdFusion component is essentially a set of related user-defined functions and variables, with additional functionality to provide and control access to the component contents. ColdFusion components can make their data private, so that it is available to all functions (also called methods) in the component, but not to any application that uses the component.
-
-ColdFusion components have the following features:
-
-- They are designed to provide related services in a single unit.
-- They can provide web services and make them available over the Internet.
-- They have several features that are familiar to object-oriented programmers, including data hiding, inheritance, packages, and introspection.
-
-CFML
-
-* [`<cfcomponent>`](https://cfdocs.org/cfcomponent)
-
-CFScript
-
-```cfc
-component {
-   function hello() {}
-}
-```
-
-### Data Types
-
-ColdFusion is considered *typeless* because you do not explicitly specify variable *data types*. 
-However, ColdFusion data, the constants and the data that variables represent, *do* have data types, which correspond to the ways the data is stored on the computer.
-
-| Category | Description and types                                        |
-| :------- | :----------------------------------------------------------- |
-| Simple   | Represents one value. You can use simple data types directly in ColdFusion expressions. ColdFusion simple data types are:<br />+ strings A sequence of alphanumeric characters enclosed in single or double quotation marks, such as "This is a test."<br />+ integers A sequence of numbers written without quotation marks, such as 356.<br />+ real numbers, such as -3.14159<br />+ Boolean values Use `True`, `Yes`, or `1` for true and `False`, `No`, or `0` for false. Boolean values are not case sensitive.<br />+ date-time values ColdFusion supports a variety of data formats. |
-| Complex  | A container for data. Complex variables generally represent more than one value. ColdFusion built-in complex data types are: *arrays, structures, queries* |
-| Binary   | Raw data, such as the contents of a GIF file or an executable program file |
-| Object   | COM, CORBA, Java, web services, and ColdFusion Component objects: Complex objects that you create and access using the cfobject tag and other specialized tags. |
-
-> ColdFusion does not have a data type for unlimited precision decimal numbers, but it can represent such numbers as strings and provides a function that supports unlimited precision decimal arithmetic.
+- CFML: similar to HTML comments but with three dash `<!--- a comment --->`
+- CFScript: similar to Java, JavaScript `//` for single line, `/* .. */` for a block
 
 ### Variables
 
@@ -157,6 +146,14 @@ writeDump(var = server, label = "Server Scope");
 dump(var = server, label = "Server Scope");
 ```
 
+#### [writeDump](https://cfdocs.org/writedump)
+
+Outputs the elements, variables and values of most kinds of CFML objects. Useful for debugging. You can display the contents of simple and complex variables, objects, components, user-defined functions, and other elements. Equivalent to the [cfdump](https://cfdocs.org/cfdump) tag, useful in [cfscript](https://cfdocs.org/cfscript).
+
+```cfc
+writeDump(server);
+```
+
 #### [evaluate()](https://cfdocs.org/evaluate)
 
 * The `evaluate()` function shall evaluate a string expression at runtime
@@ -179,13 +176,18 @@ dump(var = server, label = "Server Scope");
 
 #### Variable Lookup
 
-- Local variables
-- CGI variables
-- File variables
-- URL variables
-- Form variables
-- Cookie variables
-- Client variables
+- Local (function-local, UDFs and CFCs only)
+- Arguments
+- Thread local (inside threads only)
+- Query (not a true scope; variables in query loops)
+- Thread
+- Variables
+- CGI
+- Cffile
+- URL
+- Form
+- Cookie
+- Client
 
 #### Session Variables
 
@@ -211,15 +213,19 @@ dump(var = server, label = "Server Scope");
 <cfoutput>#session.name#</cfoutput>
 ```
 
-### Data Structures
+### Data Types
 
 #### List
 
-* A list is a string separated by a delimiter
-* The default delimiter is a comma
-
 * https://helpx.adobe.com/coldfusion/cfml-reference/coldfusion-functions/functions-by-category/list-functions.html
 * https://cfdocs.org/list-functions
+* https://docs.lucee.org/categories/list.html
+
+Lucee has lists which are strings with a delimiter (default is a comma). Lists can only contain strings (and they are a string themselves), so use an Array to contain complex data types. Lists are not real objects in Lucee, and are simply strings that contain a delimiter. As such, any string can be a list that has a delimiter other than a zero length string.
+
+List functions are prefixed with `list` in their names to differentiate from string functions. 
+
+##### Creating Lists
 
 ```cfml
 <cfset newlist = "IL,MO,IA,MN">
@@ -228,20 +234,317 @@ dump(var = server, label = "Server Scope");
 
 ##### List Modification
 
-* [listAppend()](https://cfdocs.org/listappend)
-* [listGetAt()](https://cfdocs.org/listgetat)
-* [listInsertAt()](https://cfdocs.org/listinsertat)
-* [listDeleteAt()](https://cfdocs.org/listdeleteat)
-* [listSort()](https://cfdocs.org/listsort)
-* [listLen()](https://cfdocs.org/listlen)
+* [`listAppend()`](https://cfdocs.org/listappend)
+* [`listGetAt()`](https://cfdocs.org/listgetat)
+* [`listInsertAt()`](https://cfdocs.org/listinsertat)
+* [`listDeleteAt()`](https://cfdocs.org/listdeleteat)
+* [`listSort()`](https://cfdocs.org/listsort)
+* [`listLen()`](https://cfdocs.org/listlen)
+* [`listToArray()`](https://cfdocs.org/listtoarray)
 
-#### Array
+##### Looping
 
-Lucee Array indexes start at 1 and are passed by reference. If the elements in the array are Boolean, Numeric or Strings (simple values) they are passed by value. All other complex types are passed by reference.
+```cfml
+<cfscript>
+myList = "one,two,three";
+for(val in myList){
+	echo(val & "<br />");
+}
+</cfscript>
+
+<cfset myList = 'Jeff,John,Steve,Julliane' />
+<cfloop list="#myList#" index="item">
+	#item#<br />
+</cfloop>
+<cfloop from="1" to="#listlen(myList)#" index="i">
+	#i#: #listGetAt(myList, i)#<br />
+</cfloop>
+```
+
+#### Arrays
+
+Lucee/CF array indexes **start at 1** and are **passed by reference**. If the elements in the array are Boolean, Numeric or Strings (simple values) they are passed by value. All other complex types are passed by reference.
 
 * https://cfdocs.org/array-functions
 * https://rorylaitila.gitbooks.io/lucee/content/arrays.html
+* https://docs.lucee.org/categories/array.html
 * https://helpx.adobe.com/au/coldfusion/developing-applications/the-cfml-programming-language/using-arrays-and-structures/basic-array-techniques.html
+
+##### Creating Arrays
+
+```cfml
+<cfscript>
+	threeElements = ["one","two","three"];
+	emptyArray = [];
+</cfscript>
+```
+
+##### Appending Elements
+
+```cfml
+<cfscript>
+	exampleArray = [];
+	exampleArray.append("one");
+	exampleArray.append("two");
+	exampleArray.append("three");
+</cfscript>
+```
+
+##### Referencing (1-indexing)
+
+```cfml
+<cfscript>
+	threeElements = ["one","two","three"];
+	echo(threeElements[1]);
+	echo(threeElements[3]);
+	index = "1";
+	echo (threeElements[index]);	// "one"
+	echo (threeElements["#index#"]); // ""one
+</cfscript>
+```
+
+##### Dumping
+
+```cfml
+<cfscript>
+	threeElements = ["one","two","three"];
+	dump(threeElements);
+</cfscript>
+```
+
+##### Others
+
+* [arrayLen(array)](https://cfdocs.org/arraylen)
+* [len(Object)](https://cfdocs.org/len)  
+
+##### Array Loop
+
+CFScript
+
+```cfc
+myArray = ["a", "b", "c"];
+
+// For Loop By index for CF <= 9.0
+for (i = 1; i <= arrayLen(myArray); i++) {
+    writeOutput(myArray[i]);
+}
+
+// For In CF9.0.1+ 
+for (currentIndex in myArray) {
+    writeOutput(currentIndex);
+}
+
+// arrayEach() member function CF11+
+myArray.each(function(element, index) {
+    writeOutput(element & " : " & index);
+});
+```
+
+CFML
+
+```cfml
+<cfset myArray = ["a", "b", "c"]> 
+
+<!--- By index ---> 
+<cfloop index="i" from="1" to="#arrayLen(myArray)#"> 
+	<cfoutput>#myArray[i]#</cfoutput> 
+</cfloop> 
+
+<!--- By array ---> 
+<cfloop array="#myArray#" index="currentIndex"> 
+	<cfoutput>#currentIndex#</cfoutput> 
+</cfloop>
+```
+
+#### Structs
+
+Structs in Lucee are containers for data where there is a 'key' that references a 'value'. 
+
+* https://docs.lucee.org/categories/struct.html
+* https://helpx.adobe.com/coldfusion/developing-applications/the-cfml-programming-language/using-arrays-and-structures/about-structures.html
+
+##### Creating Structs
+
+```cfml
+<cfscript>
+	emptyStruct = {};
+	nonEmptyStruct = {foo:"one", bar:"two", baz:"three"};
+</cfscript>
+```
+
+##### Nested Structs
+
+```cfml
+<cfscript>
+nestedStruct = {foo:"one", 
+            	bar:"two", 
+            	baz:{
+              		key:"value"
+            	}
+};
+</cfscript>
+```
+
+##### Creating Ordered Structs
+
+* Using [structNew()](https://cfdocs.org/structnew) with "ordered"
+
+```cfml
+<cfscript>
+myStruct = structNew("ordered");
+myStruct.insert("foo","one");
+myStruct.insert("bar","two");
+myStruct.insert("baz","three");
+</cfscript>
+```
+
+##### Inserting Items
+
+```cfml
+
+<cfscript>
+myStruct = {foo:"one", bar:"two", baz:"three"};
+myStruct.insert("key", "value");
+</cfscript>
+```
+
+##### Referencing Struct Keys
+
+* Object.property
+
+```cfml
+<cfscript>
+myStruct = {foo:"one", bar:"two", baz:"three"};
+echo(myStruct.foo);
+</cfscript>
+```
+
+* Dynamic referencing -- associative arrays (structs as arrays with string indexes)
+
+```cfml
+<cfscript>
+myStruct = {foo:"one", bar:"two", baz:"three"};
+myKey = "foo";
+echo(myStruct[myKey]); //outputs "one"
+</cfscript>
+```
+
+##### Looping Structs
+
+```cfml
+<cfscript>
+myStruct = {foo:"one", bar:"two", baz:"three"};
+for(key in myStruct){
+  echo(key); //outputs "foo" then "bar" then "baz";
+  echo(myStruct[key]); //outputs "one", then "two", then "three"
+}
+
+// By structEach() 
+myStruct.each(function(key, value) { 
+	writeOutput("<li>#key# : #value#</li>"); 
+}); 
+</cfscript>
+```
+
+#### Queries
+
+* https://docs.lucee.org/categories/query.html
+* https://helpx.adobe.com/coldfusion/cfml-reference/coldfusion-tags/tags-p-q/cfquery.html
+
+##### Creating Queries
+
+* [queryNew()](https://cfdocs.org/querynew) -- Creates a new query object. The query can be populated with data using functions [queryAddRow](https://cfdocs.org/queryaddrow), [querySetCell](https://cfdocs.org/querysetcell), or by passing it in to the rowData argument.
+
+```cfml
+<cfscript>
+myQuery = queryNew(columns="col1,col2,col3", 
+				   data=[
+				   		["one","two","three"], 
+				   		["foo","bar","baz"], 
+				   		["i","am","query"]
+				   ]);
+dump(myQuery);
+// query without data
+myQuery = queryNew("col1,col2,col3");
+dump(myQuery);
+</cfscript>
+```
+
+##### Adding Rows
+
+```cfml
+<cfscript>
+myQuery = queryNew("col1,col2,col3");
+myQuery.addRow(["foo","bar","baz"]);
+dump(myQuery);
+</cfscript>
+```
+
+##### Adding Columns
+
+```cfml
+<cfscript>
+myQuery = queryNew("col1,col2,col3");
+myQuery.addColumn("col4", ["foo","bar","baz"]);
+dump(myQuery);
+</cfscript>
+```
+
+##### Retrieving Data by Column
+
+```cfml
+<cfscript>
+myQuery = queryNew(columns="col1,col2,col3", 
+				   data=[
+				   		["one","two","three"], 
+				   		["foo","bar","baz"], 
+				   		["i","am","query"]
+				   ]);
+dump(myQuery.columnData("col1"));
+</cfscript>
+```
+
+##### Query For Loop
+
+```cfml
+<cfscript>
+	myQuery = queryNew("id,user");
+	queryAddRow(myQuery);
+	querySetCell(myQuery, 'id', '1');
+	querySetCell(myQuery, 'user', 'Jeff');
+	queryAddRow(myQuery);
+	querySetCell(myQuery, 'id', '2');
+	querySetCell(myQuery, 'user', 'John');
+	queryAddRow(myQuery);
+	querySetCell(myQuery, 'id', '3');
+	querySetCell(myQuery, 'user', 'Steve');
+</cfscript>
+
+<cfloop query="myQuery">
+	#myQuery.id# #myQuery.user#<br />
+</cfloop>
+```
+
+CFScript
+
+```cfc
+// CF < 9.0
+for ( i=1;i<=myQuery.recordCount;i++ ) {
+	writeOutput('#myQuery.id#: #myQuery.user[i]#<br />');
+}
+// (CF10+)
+for ( row in myQuery ) {
+	writeOutput('#row.id#: #row.user#');
+}
+```
+
+#### Dates
+
+* Lucee has a built in DateTime object
+
+* [createDateTime()](https://cfdocs.org/createdatetime)
+* https://docs.lucee.org/categories/datetime.html
+* https://rorylaitila.gitbooks.io/lucee/content/dates.html
 
 ### Flow Control Structures
 
@@ -265,14 +568,14 @@ CFML
 CFScript
 
 ```cfc
-count = 10; 
- if (count > 20) { 
+count = 10;
+if (count > 20) { 
  	writeOutput(count); 
- } else if (count == 8) { 
+} else if (count == 8) { 
  	writeOutput(count); 
- } else { 
+} else { 
  	writeOutput(count); 
- }
+}
 ```
 
 #### Switch-Case
@@ -331,107 +634,6 @@ CFML
 </cfloop>
 ```
 
-##### Array Loop
-
-CFScript
-
-```cfc
-myArray = ["a", "b", "c"];
-
-// For Loop By index for CF9.0.0 and lower 
-for (i = 1; i <= arrayLen(myArray); i++) {
-    writeOutput(myArray[i]);
-}
-
-// For In CF9.0.1+ 
-for (currentIndex in myArray) {
-    writeOutput(currentIndex);
-}
-
-// arrayEach() member function CF11+
-myArray.each(function(element, index) {
-    writeOutput(element & " : " & index);
-});
-```
-
-CFML
-
-```cfml
-<cfset myArray = ["a", "b", "c"]> 
-
-<!--- By index ---> 
-<cfloop index="i" from="1" to="#arrayLen(myArray)#"> 
-	<cfoutput>#myArray[i]#</cfoutput> 
-</cfloop> 
-
-<!--- By array ---> 
-<cfloop array="#myArray#" index="currentIndex"> 
-	<cfoutput>#currentIndex#</cfoutput> 
-</cfloop>
-```
-
-##### List Loop
-
-```cfml
-<!--- List ---> 
-<cfset myList = 'Jeff,John,Steve,Julliane' />
-<cfloop list="#myList#" index="item">
-	#item#<br />
-</cfloop>
-<cfloop from="1" to="#listlen(myList)#" index="i">
-	#i#: #listGetAt(myList, i)#<br />
-</cfloop>
-```
-
-##### Struct Loop
-
-```cfc
-myStruct = {name: "Tony", state: "Florida"}; 
-// By struct 
-for (key in myStruct) { 
- 	writeOutput("<li>#key# : #myStruct[key]#</li>"); 
-} 
-
-// By structEach() 
-myStruct.each(function(key, value) { 
-	writeOutput("<li>#key# : #value#</li>"); 
-}); 
-```
-
-##### Query Loop
-
-```cfml
-<cfscript>
-	myQuery = queryNew("id,user");
-	queryAddRow(myQuery);
-	querySetCell(myQuery, 'id', '1');
-	querySetCell(myQuery, 'user', 'Jeff');
-	queryAddRow(myQuery);
-	querySetCell(myQuery, 'id', '2');
-	querySetCell(myQuery, 'user', 'John');
-	queryAddRow(myQuery);
-	querySetCell(myQuery, 'id', '3');
-	querySetCell(myQuery, 'user', 'Steve');
-</cfscript>
-
-<cfloop query="myQuery">
-	#myQuery.id# #myQuery.user#<br />
-</cfloop>
-```
-
-CFScript
-
-```cfc
-// CF < 9.0
-for ( i=1;i<=myQuery.recordCount;i++ ) {
-	writeOutput('#myQuery.id#: #myQuery.user[i]#<br />');
-}
-// (CF10+)
-for ( row in myQuery ) {
-	writeOutput('#row.id#: #row.user#');
-}
-```
-
 #### [While Loop](https://docs.lucee.org/reference/tags/while.html) (in Lucee)
 
 * [`cfwhile`](https://cfdocs.org/cfwhile)
@@ -464,7 +666,7 @@ CFScript
 
 * [`cffinally`](https://cfdocs.org/cffinally)
 
-Tag
+CFML
 
 ```cfml
 <cftry>
@@ -489,6 +691,164 @@ catch (any e) {
 	writeOutput("Error: " & e.message);
 }
 ```
+
+## Closures & Lambda
+
+* https://rorylaitila.gitbooks.io/lucee/content/closures.html
+* https://modern-cfml.ortusbooks.com/cfml-language/closures
+
+### Closures
+
+> A closure is the combination of a function and the lexical environment within which that function was declared.
+
+#### Assigning / Creating Closures
+
+```cfc
+function hello(){
+    var name = "luis";
+
+    var display = function(){
+        systemOutput( name );
+    };
+
+    display();
+}
+
+hello();
+```
+
+#### Returned Closures/High-Order Functions
+
+```cfc
+function makeAdder( required x ){
+    return function( required y ){
+        return x + y;
+    };
+}
+
+add = makeAdder( 1 );
+systemOutput( add( 2 ) );
+```
+
+#### Passing Closures
+
+* like `map()`, `reduce()`, `filter()`, etc.
+
+### Lambda Expressions (Lucee Only)
+
+At the moment, only the Lucee CFML engine supports lambda expressions, which basically are a shorthand notation for defining closures.  
+
+Lambda expressions reduce much of the syntax around creating closures. In its simplest form, you can eliminate the `function` keyword, curly braces and `return` statement. Lambda expressions implicitly return the results of the expression body.
+
+```cfc
+// Using a traditional closure
+makeSix = function(){ return 5 + 1; }
+
+// Using a lambda expression
+makeSix = () => 5 + 1;
+
+// returns 6
+systemOutput( makeSix() );
+
+// Takes two numeric values and adds them
+add = ( numeric x, numeric y ) => x + y;
+
+// returns 4
+systemOutput( add( 1, 3 ) );
+```
+
+## Components and Functions
+
+### Components (CFC)
+
+* https://docs.lucee.org/categories/component.html
+* https://helpx.adobe.com/coldfusion/developing-applications/building-blocks-of-coldfusion-applications/building-and-using-coldfusion-components.html
+* https://helpx.adobe.com/coldfusion/cfml-reference/coldfusion-tags/tags-c/cfcomponent.html
+
+CFML
+
+* https://cfdocs.org/cfcomponent
+
+```cfml
+<cfcomponent>
+```
+
+CFScript
+
+```cfc
+component displayname="myComponent" {
+   function hello() {}
+}
+```
+
+#### Scopes
+
+* `variables` -- private scope, visible internally to the CFC
+* `this` -- public scope, visible from outside world
+* `static`
+
+#### Component Attributes
+
+* `accessors`  -- enables automatic getters/setters
+* `extends` -- inheritance
+* `implements` -- implements interfaces
+* `persistent` -- makes the object a Hibernate entity
+* `serializable` 
+
+#### Properties
+
+* https://cfdocs.org/cfproperty
+
+```cfc
+property name="firstName" default="";
+property name="lastName" default="";
+property name="age" type="numeric" default="0";
+property name="address" type="array";
+```
+
+### Functions
+
+* https://docs.lucee.org/reference/tags/function.html
+* https://cfdocs.org/cffunction
+* A function can take ANY amount of arguments
+* The default return type is `any` --> can return any type of variable
+* The default visibility is `public`  (others are `private`, `package`, `remote`)
+* Functions in CFML are objects themselves. They can be added, removed, renamed even at runtime as CFML is a dynamic language.
+
+CFML
+
+```cfml
+<cffunction name="">
+```
+
+CFScript
+
+```cfc
+public boolean function myFunction(required any myArgument) { }
+```
+
+#### Function Attributes
+
+* `output` 
+* `description`
+* `returnFormat`
+
+#### Function Arguments
+
+* A function can receive zero or more arguments separated by commas
+
+```cfc
+function(
+ 	required type name=default attribute=value,
+ 	required type name=default attribute=value){
+}
+```
+
+#### Function Returns
+
+* A function must use the `return` keyword to return a value
+    * can be marked `void` to denote it does not return any value
+    * if a function has no return type or `any` and the body does not explicitly return a value, the function will automatically return `null`
 
 ## Object-Oriented Programming
 
@@ -548,18 +908,20 @@ component {
 
 #### Instantiation
 
-* Using the [`new` operator](https://cfdocs.org/new), Lucee will instantiate the class and call the default constructor (if it exists)
+* Using the [`new` operator](https://cfdocs.org/new), the CFML engine will instantiate the class and call the default constructor (if it exists)
 
 ```cfml
+<cfset bob = new Person()>
 <cfscript>
-	myObj = new default_constructor();
+	myObj = new ClassName();
 </cfscript>
 ```
 
-* [cfobject](https://cfdocs.org/cfobject) 
+* [cfobject](https://cfdocs.org/cfobject)  -- Creates a CFML object, of a specified type.
 * [createObject()](https://cfdocs.org/createobject) -- to instantiate CFC Components, but also Java, Com and SOAP WebService Objects. It also allows instantiating components with dynamic variable names.
 
 ```cfml
+<cfset bob = createObject( "component", "Person" ).init()>
 <cfscript>
 tellTimeCFC=createObject("component","appResources.components.tellTime"); 
 	tellTimeCFC.getLocalTime();
@@ -627,6 +989,64 @@ component {
 
 * http://www.learncfinaweek.com/week1/Databases
 * http://www.learncfinaweek.com/week1/Intro_to_ORM
+* https://modern-cfml.ortusbooks.com/cfml-language/queries
+
+### Database Queries
+
+A query is a request to a database. It returns a CFML `query` object containing a **recordset** and other metadata information about the query. The query can ask for information from the database, write new data to the database, update existing information in the database, or delete records from the database.
+
+* Using the `cfquery` tag or function construct. (https://cfdocs.org/cfquery)
+
+* Using the `queryExecute()` function. (https://cfdocs.org/queryexecute)
+
+CFML
+
+```cfml
+<cfquery name = "qItems" datasource="pantry"> 
+ SELECT QUANTITY, ITEM 
+ FROM CUPBOARD 
+ ORDER BY ITEM 
+</cfquery> 
+```
+
+CFScript
+
+```cfc
+qItems = queryExecute( 
+ "SELECT QUANTITY, ITEM FROM CUPBOARD ORDER BY ITEM"
+);
+```
+
+#### Displaying Results
+
+CFML
+
+```cfml
+<cfoutput query = "qItems">
+There are #qItems.Quantity# #qItems.Item# in the pantry<br />
+</cfoutput>
+```
+
+CFScript
+
+```cfc
+for( var row in qItems ){
+ systemOutput( "There are #row.quantity# #row.item# in the pantry" );
+}
+
+qItems.each( function( row, index ){
+ systemOutput( "There are #row.quantity# #row.item# in the pantry" );
+
+} );
+
+for( var i = 1; i lte qItems.recordCount; i++ ){
+ systemOutput( "There are #qItems.quantity[ i ]# #qItems.item[ i ]# in the pantry" );
+}
+```
+
+#### [Query Functions](https://cfdocs.org/query-functions)
+
+
 
 ## Testing
 
@@ -661,7 +1081,7 @@ component {
 ## References
 
 * https://cfdocs.org
-* https://cfwheels.org
-* http://learncfinaweek.com
-* https://exercism.io/tracks/cfml
-* https://helpx.adobe.com/coldfusion/developing-applications/user-guide.html
+* [Learn CF in a Week](http://learncfinaweek.com)
+* [CFML Tracks](https://exercism.io/tracks/cfml)
+* [Lucee Book](https://rorylaitila.gitbooks.io/lucee)
+* [Learn Modern ColdFusion (CFML) in 100 Minutes](https://modern-cfml.ortusbooks.com)
