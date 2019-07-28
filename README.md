@@ -1,14 +1,4 @@
----
-title: "Lucee - Cold Fusion"
-slug: lucee-coldfusion
-date: 2019-07-28T09:21:37+10:00
-lastmod: 2019-07-28T09:21:37+10:00
-tags : [dev, lucee, coldfusion]
-categories : [dev]
-active: true
-highlightjslanguages: []
-markup: mmark
----
+# Self-learning Cold Fusion / Lucee
 
 * [Adobe ColdFusion](https://en.wikipedia.org/wiki/Adobe_ColdFusion): web-application development platform, created in 1995 by J. J. Allaire
 * [Lucee](https://lucee.org) is an open-source [CFML](https://en.wikipedia.org/wiki/ColdFusion_Markup_Language) application server/engine
