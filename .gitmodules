@@ -1,0 +1,3 @@
+[submodule "simple-crud-on-cfwheels"]
+	path = simple-crud-on-cfwheels
+	url = https://github.com/htr3n/simple-crud-on-cfwheels
